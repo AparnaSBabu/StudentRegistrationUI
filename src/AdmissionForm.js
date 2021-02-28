@@ -11,7 +11,8 @@ class AdmissionForm extends Component {
             clas: 'select',
             division: 'select',
             formErrors: {},
-            selectedOption: ''
+            selectedOption: '',
+            student: {}
 
         };
 
@@ -81,11 +82,32 @@ class AdmissionForm extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        // if (this.handleFormValidation()) {
+        //     this.setState(this.initialState);
+        // }
+            const response = fetch('http://localhost:8080/admission/student/savedetails', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "name": this.state.studName,
+                    "dob": this.state.dob,
+                    "standard": this.state.clas,
+                    "division": this.state.division,
+                    "gender": this.state.selectedOption
+                })
+            }).then((res) => res.json())
+                .then(res => {
+                    console.log("Response", res);
+                    this.setState({ student: res })
+                })
+            alert('You have been successfully registered.');
+           
 
-        if (this.handleFormValidation()) {
-            alert('You have been successfully registered.')
-            this.setState(this.initialState)
-        }
+       
+       
     }
 
     render() {
@@ -93,98 +115,109 @@ class AdmissionForm extends Component {
         const { studNameErr, dobErr, genderErr, diviErr, clasErr } = this.state.formErrors;
 
         return (
-            <div className="formDiv">
-                <h3 style={{ textAlign: "center" }} >Student Registration Form </h3>
-                <div>
-                    <form onSubmit={this.handleSubmit}>
-                        <div>
-                            <label htmlFor="studName">Name</label>
-                            <input type="text" name="studName"
-                                value={this.state.studName}
-                                onChange={this.handleChange}
-                                placeholder="Your name.."
-                                className={studNameErr ? ' showError' : ''} />
-                            {studNameErr &&
-                                <div style={{ color: "red", paddingBottom: 10 }}>{studNameErr}</div>
-                            }
-
-                        </div>
-                        <div>
-                            <label htmlFor="text">Birth Date</label>
-                            <input type="text" name="dob"
-                                value={this.state.dob}
-                                onChange={this.handleChange}
-                                placeholder="DD/MM/YYYY.."
-                                className={dobErr ? ' showError' : ''} />
-                            {dobErr &&
-                                <div style={{ color: "red", paddingBottom: 10 }}>{dobErr}</div>
-                            }
-                        </div>
-                        <div>
+            <div>
+                <div className="formDiv">
+                    <h3 style={{ textAlign: "center" }} >Student Registration Form </h3>
+                    <div>
+                        <form onSubmit={this.handleSubmit}>
                             <div>
-                                <label htmlFor="text">Gender</label>
-                                <div className="radio">
-                                    <label>
-                                        <input type="radio" value="male"
-                                            checked={this.state.selectedOption === 'male'}
-                                            onChange={this.handleOptionChange} />
+                                <label htmlFor="studName">Name</label>
+                                <input type="text" name="studName"
+                                    value={this.state.studName}
+                                    onChange={this.handleChange}
+                                    placeholder="Your name.."
+                                    className={studNameErr ? ' showError' : ''} />
+                                {studNameErr &&
+                                    <div style={{ color: "red", paddingBottom: 10 }}>{studNameErr}</div>
+                                }
+
+                            </div>
+                            <div>
+                                <label htmlFor="text">Birth Date</label>
+                                <input type="text" name="dob"
+                                    value={this.state.dob}
+                                    onChange={this.handleChange}
+                                    placeholder="DD/MM/YYYY.."
+                                    className={dobErr ? ' showError' : ''} />
+                                {dobErr &&
+                                    <div style={{ color: "red", paddingBottom: 10 }}>{dobErr}</div>
+                                }
+                            </div>
+                            <div>
+                                <div>
+                                    <label htmlFor="text">Gender</label>
+                                    <div className="radio">
+                                        <label>
+                                            <input type="radio" value="male"
+                                                checked={this.state.selectedOption === 'male'}
+                                                onChange={this.handleOptionChange} />
 
 
           Male
           </label>
 
-                                    <label>
-                                        <input type="radio" value="female" checked={this.state.selectedOption === 'female'}
-                                            onChange={this.handleOptionChange} />
+                                        <label>
+                                            <input type="radio" value="female" checked={this.state.selectedOption === 'female'}
+                                                onChange={this.handleOptionChange} />
 
           Female
           </label>
+                                    </div>
                                 </div>
+
                             </div>
+                            <div>
+                                <label htmlFor="clas">Class</label>
+                                <select name="clas"
+                                    value={this.state.clas}
+                                    onChange={this.handleChange}
+                                    className={clasErr ? ' showError' : ''} >
+                                    <option value="select">--Select--</option>
+                                    <option value="1">I</option>
+                                    <option value="2">II</option>
+                                    <option value="3">III</option>
+                                    <option value="4">IV</option>
+                                    <option value="5">V</option>
+                                    <option value="6">VI</option>
+                                    <option value="7">VII</option>
+                                    <option value="8">VIII</option>
+                                    <option value="9">IX</option>
+                                    <option value="10">X</option>
+                                    <option value="11">XI</option>
+                                    <option value="12">X12</option>
+                                </select>
+                                {clasErr &&
+                                    <div style={{ color: "red", paddingBottom: 10 }}>{clasErr}</div>
+                                }
+                            </div>
+                            <div>
+                                <label htmlFor="division">Division</label>
+                                <select name="division"
+                                    value={this.state.division}
+                                    onChange={this.handleChange}
+                                    className={diviErr ? ' showError' : ''} >
+                                    <option value="select">--Select--</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
 
-                        </div>
-                        <div>
-                            <label htmlFor="clas">Class</label>
-                            <select name="clas"
-                                value={this.state.clas}
-                                onChange={this.handleChange}
-                                className={clasErr ? ' showError' : ''} >
-                                <option value="select">--Select--</option>
-                                <option value="I">I</option>
-                                <option value="II">II</option>
-                                <option value="III">III</option>
-                                <option value="IV">IV</option>
-                                <option value="V">V</option>
-                                <option value="VI">VI</option>
-                                <option value="VII">VII</option>
-                                <option value="VIII">VIII</option>
-                                <option value="IX">IX</option>
-                                <option value="X">X</option>
-                                <option value="XI">XI</option>
-                                <option value="X12">X12</option>
-                            </select>
-                            {clasErr &&
-                                <div style={{ color: "red", paddingBottom: 10 }}>{clasErr}</div>
-                            }
-                        </div>
-                        <div>
-                            <label htmlFor="division">Division</label>
-                            <select name="division"
-                                value={this.state.division}
-                                onChange={this.handleChange}
-                                className={diviErr ? ' showError' : ''} >
-                                <option value="select">--Select--</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
+                                </select>
+                                {diviErr &&
+                                    <div style={{ color: "red", paddingBottom: 10 }}>{diviErr}</div>
+                                }
+                            </div>
+                            <input type="submit" value="Submit" />
+                        </form>
+                    </div>
+                </div>
 
-                            </select>
-                            {diviErr &&
-                                <div style={{ color: "red", paddingBottom: 10 }}>{diviErr}</div>
-                            }
-                        </div>
-                        <input type="submit" value="Submit" />
-                    </form>
+                <div>Student Details
+                <div> Name : {this.state.student.name}</div>
+                    <div>  Date of Birth {this.state.student.dob}</div>
+                    <div>  Roll No :{this.state.student.rollno}</div>
+                    <div>  Gender : {this.state.student.gender}</div>
+                    <div> Standard :  {this.state.student.standard}</div>
+                    <div> Division : {this.state.student.division}</div>
                 </div>
             </div>
         )
